@@ -1,0 +1,47 @@
+from flask_cors import CORSapp = Flask(__name__)CORS(app)
+0 commit commentsComments0<!DOCTYPE html>
+
+<html>
+<head>
+  <title>AI Video Generator</title>
+</head>
+<body>
+
+<h1>AI Video Generator 🎬</h1>
+
+<input id="prompt" placeholder="Write your idea..." style="width:300px;">
+<br><br>
+
+<button onclick="go()">Generate Video</button>
+
+<p id="msg"></p>
+
+<video id="v" controls width="400"></video>
+
+<script>
+async function go() {
+  let p = document.getElementById("prompt").value;
+
+  document.getElementById("msg").innerText = "Generating... please wait";
+
+  let res = await fetch("/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ prompt: p })
+  });
+
+  let data = await res.json();
+
+  if (data.video_url) {
+    document.getElementById("v").src = data.video_url;
+    document.getElementById("msg").innerText = "Done!";
+  } else {
+    document.getElementById("msg").innerText = "Error: " + data.message;
+  }
+}
+</script>
+
+</body>
+</html>
